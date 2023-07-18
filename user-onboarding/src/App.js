@@ -23,15 +23,16 @@ const initialFormErrors = {
 function App() {
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState(initialFormErrors);
-  const [users, setUser] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const handleSubmit = () => {
     axios
       .post("https://reqres.in/api/users", formValues)
       .then((res) => {
-        console.log(res);
+        setUsers([res.data, ...users]);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setFormValues(initialFormValues));
   };
 
   const validate = (name, value) => {
@@ -55,6 +56,12 @@ function App() {
         errors={formErrors}
         submit={handleSubmit}
       />
+      {users.map((user) => (
+        <div key={user.id}>
+          <p>{users.createdAt}</p>
+          <p>{user.email}</p>
+        </div>
+      ))}
     </div>
   );
 }
